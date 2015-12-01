@@ -104,6 +104,16 @@ typedef struct master_t {
     uint8_t current_profile_index;
     controlRateConfig_t controlRateProfiles[MAX_CONTROL_RATE_PROFILE_COUNT];
 
+#ifdef VTX
+    uint8_t vtx_band; //1=A, 2=B, 3=E, 4=F(Airwaves/Fatshark), 5=Raceband
+    uint8_t vtx_channel; //1-8
+    uint8_t vtx_mode; //0=ch+band 1=mhz 2=aux range
+    uint16_t vtx_mhz; //5740
+    uint8_t vtx_power; //0=low, 1=high
+    
+    vtxChannelActivationCondition_t vtxChannelActivationConditions[MAX_CHANNEL_ACTIVATION_CONDITION_COUNT];
+#endif
+
 #ifdef BLACKBOX
     uint8_t blackbox_rate_num;
     uint8_t blackbox_rate_denom;

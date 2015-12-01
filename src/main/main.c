@@ -67,6 +67,7 @@
 #include "io/display.h"
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/transponder_ir.h"
+#include "io/vtx.h"
 
 #include "sensors/sensors.h"
 #include "sensors/sonar.h"
@@ -408,6 +409,10 @@ void init(void)
 #ifdef USE_SPI
     spiInit(SPI1);
     spiInit(SPI2);
+#endif
+
+#ifdef VTX
+    vtxInit();
 #endif
 
 #ifdef USE_HARDWARE_REVISION_DETECTION

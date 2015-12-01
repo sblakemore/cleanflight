@@ -36,6 +36,7 @@
 #include "io/gimbal.h"
 #include "io/serial.h"
 #include "io/ledstrip.h"
+#include "io/vtx.h"
 
 #include "sensors/boardalignment.h"
 #include "sensors/sensors.h"

@@ -66,7 +66,7 @@
 #include "io/statusindicator.h"
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/transponder_ir.h"
-
+#include "io/vtx.h"
 
 #include "rx/rx.h"
 #include "rx/msp.h"
@@ -582,6 +582,9 @@ void processRx(void)
     }
 #endif
 
+#ifdef VTX
+    vtxUpdateActivatedChannel();
+#endif
 }
 
 void filterRc(void){
