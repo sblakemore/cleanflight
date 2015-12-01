@@ -608,6 +608,14 @@ STATIC_UNIT_TESTED void resetConf(void)
     masterConfig.customMotorMixer[7].yaw = -1.0f;
 #endif
 
+    // alternative defaults settings for SINGULARITY target
+#if defined(SINGULARITY)
+    featureSet(FEATURE_RX_PPM);
+    masterConfig.batteryConfig.vbatscale = 77;
+    masterConfig.serialConfig.portConfigs[1].functionMask = FUNCTION_MSP;
+    masterConfig.serialConfig.portConfigs[2].functionMask = FUNCTION_RX_SERIAL;
+#endif
+
     // copy first profile into remaining profile
     for (i = 1; i < MAX_PROFILE_COUNT; i++) {
         memcpy(&masterConfig.profile[i], currentProfile, sizeof(profile_t));
