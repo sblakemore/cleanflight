@@ -53,6 +53,7 @@
 #include "io/beeper.h"
 #include "io/display.h"
 #include "io/escservo.h"
+#include "io/vtx.h"
 
 #include "io/gimbal.h"
 #include "io/gps.h"

@@ -49,6 +49,8 @@
 #define USE_FLASHFS
 #define USE_FLASH_M25P16
 
+#define VTX
+
 #define BEEPER
 #define LED0
 
@@ -90,12 +92,17 @@
 #define I2C_DEVICE (I2CDEV_1) // PB6/SCL, PB7/SDA
 
 #define USE_SPI
+#define USE_SPI_DEVICE_1 // PA4, 5, 6, 7
 #define USE_SPI_DEVICE_2 // PB12,13,14,15 on AF5
 
 #define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
 #define M25P16_CS_GPIO          GPIOB
 #define M25P16_CS_PIN           GPIO_Pin_12
 #define M25P16_SPI_INSTANCE     SPI2
+
+#define RTC6705_CS_GPIO         GPIOA
+#define RTC6705_CS_PIN          GPIO_Pin_4
+#define RTC6705_SPI_INSTANCE    SPI1
 
 #define USE_ADC
 #define BOARD_HAS_VOLTAGE_DIVIDER

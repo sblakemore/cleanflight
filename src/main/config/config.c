@@ -54,6 +54,7 @@
 #include "io/rc_curves.h"
 #include "io/ledstrip.h"
 #include "io/gps.h"
+#include "io/vtx.h"
 
 #include "rx/rx.h"
 
@@ -495,6 +496,13 @@ STATIC_UNIT_TESTED void resetConf(void)
     memcpy(masterConfig.transponderData, &defaultTransponderData, sizeof(defaultTransponderData));
 #endif
 
+#ifdef VTX
+    masterConfig.vtx_band = 4;    //Fatshark/Airwaves
+    masterConfig.vtx_channel = 1; //CH1
+    masterConfig.vtx_mode = 0;    //CH+BAND mode
+    masterConfig.vtx_mhz = 5740;  //F0
+#endif
+
 #ifdef BLACKBOX
 
 #if defined(ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT)
@@ -611,6 +619,7 @@ STATIC_UNIT_TESTED void resetConf(void)
     // alternative defaults settings for SINGULARITY target
 #if defined(SINGULARITY)
     featureSet(FEATURE_RX_PPM);
+    featureSet(FEATURE_VTX);
     masterConfig.batteryConfig.vbatscale = 77;
     masterConfig.serialConfig.portConfigs[1].functionMask = FUNCTION_MSP;
     masterConfig.serialConfig.portConfigs[2].functionMask = FUNCTION_RX_SERIAL;

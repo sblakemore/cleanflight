@@ -158,6 +158,7 @@ throttleStatus_e calculateThrottleStatus(rxConfig_t *rxConfig, uint16_t deadband
 rollPitchStatus_e calculateRollPitchCenterStatus(rxConfig_t *rxConfig);
 void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStatus, bool retarded_arm, bool disarm_kill_switch);
 
+bool isRangeActive(uint8_t auxChannelIndex, channelRange_t *range);
 void updateActivatedModes(modeActivationCondition_t *modeActivationConditions);
 
 #define PID_MIN      0
