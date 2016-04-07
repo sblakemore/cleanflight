@@ -115,15 +115,19 @@ static bool rtc6705IsReady()
  * This is easier for when generating the frequency to then
  * reverse the bits afterwards
  */
-static uint32_t reverse32(uint32_t in) {
-    uint32_t out = 0;
+static uint32_t reverse32(uint32_t in)
+{
+    uint32_t out = in;  // First bit
+    int s = 31 ;
 
-    for (uint8_t i = 0 ; i < 32 ; i++)
-    {
-        out |= ((in>>i) & 1)<<(31-i);
+    for (v >>= 1; v; v >>= 1) {
+        out <<= 1;
+        out |= v & 1;
+        s--;
     }
+    out <<= s; // Shift remaining count when v's high order bits are zero
 
-    return out;
+   return out;
 }
 
 /**
