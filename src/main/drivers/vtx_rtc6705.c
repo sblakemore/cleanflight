@@ -28,7 +28,7 @@
 
 #include "platform.h"
 
-#ifdef VTX
+#ifdef RTC6705_SPI
 
 #include "common/maths.h"
 

@@ -110,8 +110,16 @@ typedef struct master_t {
     uint8_t vtx_mode; //0=ch+band 1=mhz 2=aux range
     uint16_t vtx_mhz; //5740
     uint8_t vtx_power; //0=low, 1=high
-    
-    vtxChannelActivationCondition_t vtxChannelActivationConditions[MAX_CHANNEL_ACTIVATION_CONDITION_COUNT];
+#endif
+
+#ifdef VTXRC
+    vtxRcChannelActivationCondition_t vtxRcChannelActivationConditions[MAX_CHANNEL_ACTIVATION_CONDITION_COUNT];
+#endif
+
+#ifdef RTC6705_BB
+    uint16_t vtxbb_ss_pcode;
+    uint16_t vtxbb_sck_pcode;
+    uint16_t vtxbb_mosi_pcode;
 #endif
 
 #ifdef BLACKBOX

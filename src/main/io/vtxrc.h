@@ -24,22 +24,24 @@
 
 #pragma once
 
-#define VTX_BAND_MIN    						1
-#define VTX_BAND_MAX    						5
-#define VTX_CHANNEL_MIN 						1
-#define VTX_CHANNEL_MAX 						8
-#define MAX_CHANNEL_ACTIVATION_CONDITION_COUNT 	10
+// XXX Do these belong here? Variable-based to support 1.3 and 2.4G?
+#define VTX_BAND_MIN    1
+#define VTX_BAND_MAX    5
+#define VTX_CHANNEL_MIN	1
+#define VTX_CHANNEL_MAX 8
 
-typedef struct vtxChannelActivationCondition_s {
+#define MAX_CHANNEL_ACTIVATION_CONDITION_COUNT     10
+
+typedef struct vtxRcChannelActivationCondition_s {
     uint8_t auxChannelIndex;
     uint8_t band;
     uint8_t channel;
     channelRange_t range;
-} vtxChannelActivationCondition_t;
+} vtxRcChannelActivationCondition_t;
 
-void vtxInit();
-void vtxIncrementBand();
-void vtxDecrementBand();
-void vtxIncrementChannel();
-void vtxDecrementChannel();
-void vtxUpdateActivatedChannel();
+void vtxRcInit();
+void vtxRcIncrementBand();
+void vtxRcDecrementBand();
+void vtxRcIncrementChannel();
+void vtxRcDecrementChannel();
+void vtxRcUpdateActivatedChannel();

@@ -54,6 +54,7 @@
 #include "drivers/usb_io.h"
 #include "drivers/transponder_ir.h"
 #include "drivers/gyro_sync.h"
+#include "drivers/vtxbb.h"
 
 #include "rx/rx.h"
 
@@ -67,7 +68,7 @@
 #include "io/display.h"
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/transponder_ir.h"
-#include "io/vtx.h"
+#include "io/vtxrc.h"
 
 #include "sensors/sensors.h"
 #include "sensors/sonar.h"
@@ -341,6 +342,25 @@ void init(void)
     }
 #endif
 
+#ifdef RTC6705_BB
+    const vtxbbHardware_t *vtxbbHardware;
+    vtxbbGPIOConfig_t vtxbbGPIOConfig;
+    if (feature(FEATURE_VTXBB) &&
+            (vtxbbHardware = vtxbbGetHardwareConfig())) {
+        vtxbbGPIOConfig.ssGPIO = vtxbbHardware->ss_gpio;
+        vtxbbGPIOConfig.ssPin = vtxbbHardware->ss_pin;
+        vtxbbGPIOConfig.sckGPIO = vtxbbHardware->sck_gpio;
+        vtxbbGPIOConfig.sckPin = vtxbbHardware->sck_pin;
+        vtxbbGPIOConfig.mosiGPIO = vtxbbHardware->mosi_gpio;
+        vtxbbGPIOConfig.mosiPin = vtxbbHardware->mosi_pin;
+        pwm_params.vtxbbGPIOConfig = &vtxbbGPIOConfig;
+        pwm_params.useVTXBB = true;     // Never used ...
+    } else {
+        pwm_params.vtxbbGPIOConfig = NULL;
+        pwm_params.useVTXBB = false;    // Never used ...
+    }
+#endif
+
     // when using airplane/wing mixer, servo/motor outputs are remapped
     if (masterConfig.mixerMode == MIXER_AIRPLANE || masterConfig.mixerMode == MIXER_FLYING_WING || masterConfig.mixerMode == MIXER_CUSTOM_AIRPLANE)
         pwm_params.airplane = true;
@@ -412,7 +432,7 @@ void init(void)
 #endif
 
 #ifdef VTX
-    vtxInit();
+    vtxRcInit();
 #endif
 
 #ifdef USE_HARDWARE_REVISION_DETECTION

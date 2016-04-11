@@ -54,7 +54,7 @@
 #include "io/rc_curves.h"
 #include "io/ledstrip.h"
 #include "io/gps.h"
-#include "io/vtx.h"
+#include "io/vtxrc.h"
 
 #include "rx/rx.h"
 

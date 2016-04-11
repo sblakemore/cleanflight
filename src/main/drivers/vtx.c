@@ -27,6 +27,7 @@
 #include <stdint.h>
 
 #include "platform.h"
+#include "common/utils.h"
 
 #ifdef VTX
 
@@ -64,6 +65,8 @@ void vtxSetPower(uint8_t power)
         digitalLo(VTX_POWER_GPIO, VTX_POWER_PIN);
 
     }
+#else
+UNUSED(power);
 #endif
 }
 
