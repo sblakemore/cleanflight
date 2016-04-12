@@ -719,7 +719,11 @@ const clivalue_t valueTable[] = {
 #ifdef VTX
     { "vtx_band",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_band, .config.minmax = { 1, 5 } },
     { "vtx_channel",                VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_channel, .config.minmax = { 1, 8 } },
+#ifdef VTXRC
     { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 2 } },
+#else
+    { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 1 } },
+#endif
     { "vtx_mhz",                    VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_mhz, .config.minmax = { 5600, 5950 } },
     { "vtx_power",                  VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_power, .config.minmax = { 0, 1 } },
 #endif
