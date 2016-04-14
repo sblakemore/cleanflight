@@ -46,6 +46,7 @@
 #include "drivers/timer.h"
 #include "drivers/pwm_rx.h"
 #include "drivers/sdcard.h"
+#include "drivers/vtx_rtc6705.h"
 
 #include "drivers/buf_writer.h"
 
@@ -717,14 +718,14 @@ const clivalue_t valueTable[] = {
 #endif
 
 #ifdef VTX
-    { "vtx_band",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_band, .config.minmax = { 1, 5 } },
-    { "vtx_channel",                VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_channel, .config.minmax = { 1, 8 } },
-#ifdef VTXRC
+    { "vtx_band",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_band, .config.minmax = { VTX_BAND_MIN, VTX_BAND_MAX } },
+    { "vtx_channel",                VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_channel, .config.minmax = { VTX_CHANNEL_MIN, VTX_CHANNEL_MAX } },
+# ifdef VTXRC
     { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 2 } },
-#else
+# else
     { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 1 } },
-#endif
-    { "vtx_mhz",                    VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_mhz, .config.minmax = { 5600, 5950 } },
+# endif
+    { "vtx_mhz",                    VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_mhz, .config.minmax = { RTC6705_FREQ_MIN, RTC6705_FREQ_MAX } },
     { "vtx_power",                  VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_power, .config.minmax = { 0, 1 } },
 #endif
 
