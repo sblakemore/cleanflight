@@ -28,8 +28,6 @@
 
 #include "platform.h"
 
-#ifdef VTX
-
 #include "common/color.h"
 #include "common/axis.h"
 #include "common/maths.h"
@@ -53,7 +51,7 @@
 #include "io/rc_curves.h"
 #include "io/ledstrip.h"
 #include "io/gps.h"
-#include "io/vtx.h"
+#include "io/vtxrc.h"
 
 #include "sensors/sensors.h"
 #include "sensors/gyro.h"
@@ -79,9 +77,9 @@
 #include "config/config_master.h"
 #include "config/runtime_config.h"
 
-static uint8_t locked = 0;
+#ifdef VTX
 
-void vtxInit()
+void vtxRcInit()
 {
     vtxDriverInit();
 
@@ -93,6 +91,12 @@ void vtxInit()
         vtx.setFreq(masterConfig.vtx_mhz);
     }
 }
+
+#endif // plain VTX
+
+#ifdef VTXRC
+
+static uint8_t locked = 0;
 
 static void setChannelSaveAndNotify(uint8_t *bandOrChannel, uint8_t step, int32_t min, int32_t max)
 {
@@ -111,27 +115,27 @@ static void setChannelSaveAndNotify(uint8_t *bandOrChannel, uint8_t step, int32_
     }
 }
 
-void vtxIncrementBand()
+void vtxRcIncrementBand()
 {
     setChannelSaveAndNotify(&(masterConfig.vtx_band), 1, RTC6705_BAND_MIN, RTC6705_BAND_MAX);
 }
 
-void vtxDecrementBand()
+void vtxRcDecrementBand()
 {
     setChannelSaveAndNotify(&(masterConfig.vtx_band), -1, RTC6705_BAND_MIN, RTC6705_BAND_MAX);
 }
 
-void vtxIncrementChannel()
+void vtxRcIncrementChannel()
 {
     setChannelSaveAndNotify(&(masterConfig.vtx_channel), 1, RTC6705_CHANNEL_MIN, RTC6705_CHANNEL_MAX);
 }
 
-void vtxDecrementChannel()
+void vtxRcDecrementChannel()
 {
     setChannelSaveAndNotify(&(masterConfig.vtx_channel), -1, RTC6705_CHANNEL_MIN, RTC6705_CHANNEL_MAX);
 }
 
-void vtxUpdateActivatedChannel()
+void vtxRcUpdateActivatedChannel()
 {
     if (ARMING_FLAG(ARMED))
         locked = 1;
@@ -141,7 +145,7 @@ void vtxUpdateActivatedChannel()
         uint8_t index;
 
         for (index = 0; index < MAX_CHANNEL_ACTIVATION_CONDITION_COUNT; index++) {
-            vtxChannelActivationCondition_t *cac = &masterConfig.vtxChannelActivationConditions[index];
+            vtxRcChannelActivationCondition_t *cac = &masterConfig.vtxRcChannelActivationConditions[index];
 
             if (isRangeActive(cac->auxChannelIndex, &cac->range)
                 && index != lastIndex) {

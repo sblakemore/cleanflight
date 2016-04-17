@@ -18,7 +18,12 @@
 TARGET		?= NAZE
 
 # Compile-time options
-OPTIONS		?=
+#OPTIONS		?=
+
+# For now (sake of command line simplicity)
+#OPTIONS		?= VTX VTXRC USE_VTX_RTC6705 RTC6705_SPI
+#OPTIONS		?= VTX VTXRC USE_VTX_RTC6705 RTC6705_BB
+OPTIONS		?= VTX USE_VTX_RTC6705 RTC6705_BB
 
 # Debugger optons, must be empty or GDB
 DEBUG ?=
@@ -279,9 +284,13 @@ HIGHEND_SRC = \
 		   flight/navigation.c \
 		   flight/gps_conversion.c \
 		   common/colorconversion.c \
+		   drivers/vtx.c \
+		   drivers/vtx_rtc6705.c \
+		   drivers/vtx_rtc6705bb.c \
 		   io/gps.c \
 		   io/ledstrip.c \
 		   io/display.c \
+		   io/vtxrc.c \
 		   telemetry/telemetry.c \
 		   telemetry/frsky.c \
 		   telemetry/hott.c \

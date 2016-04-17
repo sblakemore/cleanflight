@@ -46,6 +46,7 @@
 #include "drivers/timer.h"
 #include "drivers/pwm_rx.h"
 #include "drivers/sdcard.h"
+#include "drivers/vtx_rtc6705.h"
 
 #include "drivers/buf_writer.h"
 
@@ -58,7 +59,7 @@
 #include "io/flashfs.h"
 #include "io/beeper.h"
 #include "io/asyncfatfs/asyncfatfs.h"
-#include "io/vtx.h"
+#include "io/vtxrc.h"
 
 #include "rx/rx.h"
 #include "rx/spektrum.h"
@@ -162,7 +163,7 @@ static void cliFlashRead(char *cmdline);
 static void cliSdInfo(char *cmdline);
 #endif
 
-#ifdef VTX
+#ifdef VTXRC
 static void cliVtx(char *cmdline);
 #endif
 
@@ -188,7 +189,7 @@ static const char * const featureNames[] = {
     "SERVO_TILT", "SOFTSERIAL", "GPS", "FAILSAFE",
     "SONAR", "TELEMETRY", "CURRENT_METER", "3D", "RX_PARALLEL_PWM",
     "RX_MSP", "RSSI_ADC", "LED_STRIP", "DISPLAY", "ONESHOT125",
-    "BLACKBOX", "CHANNEL_FORWARDING", "TRANSPONDER", NULL
+    "BLACKBOX", "CHANNEL_FORWARDING", "TRANSPONDER", "VTXBB", NULL
 };
 
 // sync this with rxFailsafeChannelMode_e
@@ -311,7 +312,7 @@ const clicmd_t cmdTable[] = {
     CLI_COMMAND_DEF("tasks", "show task stats", NULL, cliTasks),
 #endif
     CLI_COMMAND_DEF("version", "show version", NULL, cliVersion),
-#ifdef VTX
+#ifdef VTXRC
     CLI_COMMAND_DEF("vtx", "vtx channels on switch", NULL, cliVtx),
 #endif
 };
@@ -717,11 +718,21 @@ const clivalue_t valueTable[] = {
 #endif
 
 #ifdef VTX
-    { "vtx_band",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_band, .config.minmax = { 1, 5 } },
-    { "vtx_channel",                VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_channel, .config.minmax = { 1, 8 } },
+    { "vtx_band",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_band, .config.minmax = { VTX_BAND_MIN, VTX_BAND_MAX } },
+    { "vtx_channel",                VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_channel, .config.minmax = { VTX_CHANNEL_MIN, VTX_CHANNEL_MAX } },
+# ifdef VTXRC
     { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 2 } },
-    { "vtx_mhz",                    VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_mhz, .config.minmax = { 5600, 5950 } },
+# else
+    { "vtx_mode",                   VAR_UINT8  | MASTER_VALUE,  &masterConfig.vtx_mode, .config.minmax = { 0, 1 } },
+# endif
+    { "vtx_mhz",                    VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_mhz, .config.minmax = { RTC6705_FREQ_MIN, RTC6705_FREQ_MAX } },
     { "vtx_power",                  VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtx_power, .config.minmax = { 0, 1 } },
+#endif
+
+#ifdef RTC6705_BB
+    { "vtxbb_ss_pcode",              VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtxbb_ss_pcode, .config.minmax = { 0,  615 } },
+    { "vtxbb_sck_pcode",             VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtxbb_sck_pcode, .config.minmax = { 0,  615 } },
+    { "vtxbb_mosi_pcode",            VAR_UINT16 | MASTER_VALUE,  &masterConfig.vtxbb_mosi_pcode, .config.minmax = { 0,  615 } },
 #endif
 
     { "magzero_x",                  VAR_INT16  | MASTER_VALUE, &masterConfig.magZero.raw[X], .config.minmax = { -32768,  32767 } },
@@ -1655,7 +1666,7 @@ static void cliFlashRead(char *cmdline)
 #endif
 #endif
 
-#ifdef VTX
+#ifdef VTXRC
 static void cliVtx(char *cmdline)
 {
     int i, val = 0;
@@ -1664,7 +1675,7 @@ static void cliVtx(char *cmdline)
     if (isEmpty(cmdline)) {
         // print out vtx channel settings
         for (i = 0; i < MAX_CHANNEL_ACTIVATION_CONDITION_COUNT; i++) {
-            vtxChannelActivationCondition_t *cac = &masterConfig.vtxChannelActivationConditions[i];
+            vtxRcChannelActivationCondition_t *cac = &masterConfig.vtxRcChannelActivationConditions[i];
             printf("vtx %u %u %u %u %u %u\r\n",
                 i,
                 cac->auxChannelIndex,
@@ -1678,7 +1689,7 @@ static void cliVtx(char *cmdline)
         ptr = cmdline;
         i = atoi(ptr++);
         if (i < MAX_CHANNEL_ACTIVATION_CONDITION_COUNT) {
-            vtxChannelActivationCondition_t *cac = &masterConfig.vtxChannelActivationConditions[i];
+            vtxRcChannelActivationCondition_t *cac = &masterConfig.vtxRcChannelActivationConditions[i];
             uint8_t validArgumentCount = 0;
             ptr = strchr(ptr, ' ');
             if (ptr) {
@@ -1707,7 +1718,7 @@ static void cliVtx(char *cmdline)
             ptr = processChannelRangeArgs(ptr, &cac->range, &validArgumentCount);
 
             if (validArgumentCount != 5) {
-                memset(cac, 0, sizeof(vtxChannelActivationCondition_t));
+                memset(cac, 0, sizeof(vtxRcChannelActivationCondition_t));
             }
         } else {
             cliShowArgumentRangeError("index", 0, MAX_CHANNEL_ACTIVATION_CONDITION_COUNT - 1);
@@ -1900,7 +1911,7 @@ static void cliDump(char *cmdline)
         }
 #endif
 
-#ifdef VTX
+#ifdef VTXRC
         cliPrint("\r\n# vtx\r\n");
 
         cliVtx("");

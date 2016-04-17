@@ -26,6 +26,7 @@
 
 #include <stdint.h>
 
+// XXX VTX_{BAND,CHANNEL}_{MIN,MAX} in io/vtxrc.h?
 #define RTC6705_BAND_MIN    1
 #define RTC6705_BAND_MAX    5
 #define RTC6705_CHANNEL_MIN 1

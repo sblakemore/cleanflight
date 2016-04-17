@@ -47,7 +47,7 @@
 #include "io/beeper.h"
 #include "io/escservo.h"
 #include "io/rc_curves.h"
-#include "io/vtx.h"
+#include "io/vtxrc.h"
 
 #include "io/display.h"
 
@@ -315,15 +315,15 @@ void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStat
     }
 #endif
 
-#ifdef VTX
+#ifdef VTXRC
     if (rcSticks ==  THR_HI + YAW_LO + PIT_CE + ROL_HI)
-        vtxIncrementBand();
+        vtxRcIncrementBand();
     if (rcSticks ==  THR_HI + YAW_LO + PIT_CE + ROL_LO)
-        vtxDecrementBand();
+        vtxRcDecrementBand();
     if (rcSticks ==  THR_HI + YAW_HI + PIT_CE + ROL_HI)
-        vtxIncrementChannel();
+        vtxRcIncrementChannel();
     if (rcSticks ==  THR_HI + YAW_HI + PIT_CE + ROL_LO)
-        vtxDecrementChannel();
+        vtxRcDecrementChannel();
 #endif
 
 }
